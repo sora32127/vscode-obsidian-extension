@@ -17,7 +17,9 @@
 			}
 		]
 	},
-	"scripts": {},
+	"scripts": {
+		"build": "tsc"
+	},
 	"devDependencies": {
 		"@eslint/js": "^9.13.0",
 		"@stylistic/eslint-plugin": "^2.9.0",
