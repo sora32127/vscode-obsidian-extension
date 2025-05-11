@@ -1,10 +1,16 @@
 import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
-	const disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
-		vscode.window.showInformationMessage('Hello World From TS, Motherfucker');
-	});
 
-	context.subscriptions.push(disposable);
+	// obsidianLink.openコマンドの登録
+	const openLinkCommand = vscode.commands.registerCommand('obsidianLink.open', async (linkName: string) => {
+		const files = await vscode.workspace.findFiles(`**/${linkName}.md`, '**/node_modules/**', 10);
+		if (files.length > 0) {
+			await vscode.window.showTextDocument(files[0]);
+		} else {
+			vscode.window.showWarningMessage(`ファイルが見つかりません: ${linkName}.md`);
+		}
+	});
+	context.subscriptions.push(openLinkCommand);
 
 	// Markdown用DocumentLinkProviderの登録
 	const linkProvider: vscode.DocumentLinkProvider = {
@@ -17,8 +23,9 @@ export function activate(context: vscode.ExtensionContext) {
 				const start = document.positionAt(result.index);
 				const end = document.positionAt(result.index + result[0].length);
 				const range = new vscode.Range(start, end);
-				// targetは後でコマンドURIに変更予定
-				const link = new vscode.DocumentLink(range);
+				const linkName = result[1];
+				const commandUri = vscode.Uri.parse(`command:obsidianLink.open?${encodeURIComponent(JSON.stringify(linkName))}`);
+				const link = new vscode.DocumentLink(range, commandUri);
 				links.push(link);
 			}
 			return links;
