@@ -7,7 +7,15 @@ export function activate(context: vscode.ExtensionContext) {
 		if (files.length > 0) {
 			await vscode.window.showTextDocument(files[0]);
 		} else {
-			vscode.window.showWarningMessage(`ファイルが見つかりません: ${linkName}.md`);
+			// ファイルがなければ新規作成
+			const folders = vscode.workspace.workspaceFolders;
+			if (!folders || folders.length === 0) {
+				vscode.window.showWarningMessage('ワークスペースフォルダがありません');
+				return;
+			}
+			const uri = vscode.Uri.joinPath(folders[0].uri, `${linkName}.md`);
+			await vscode.workspace.fs.writeFile(uri, new Uint8Array(0));
+			await vscode.window.showTextDocument(uri);
 		}
 	});
 	context.subscriptions.push(openLinkCommand);
