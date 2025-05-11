@@ -7,16 +7,10 @@
 	"engines": {
 		"vscode": "^1.74.0"
 	},
-	"activationEvents": [],
+	"activationEvents": [
+		"onLanguage:markdown"
+	],
 	"main": "./dist/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			}
-		]
-	},
 	"scripts": {
 		"build": "tsc"
 	},
