@@ -25,7 +25,9 @@ export function activate(context: vscode.ExtensionContext) {
 		provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken) {
 			const text = document.getText();
 			const links: vscode.DocumentLink[] = [];
-			const regex = /\[\[([^\]]+)\]\]/g;
+			// support obsidian [[linkName]] but also [[linkName|alias]] and [[linkName#section|alias]]
+			// https://help.obsidian.md/links#Change+the+link+display+text
+			const regex = /\[\[([^\]|#]+).*\]\]/g;
 			let match: RegExpExecArray | null;
 			for (let result = regex.exec(text); result !== null; result = regex.exec(text)) {
 				const start = document.positionAt(result.index);
